@@ -24,10 +24,6 @@ var (
 	version string
 )
 
-type AuthResp struct {
-	Token string `json:"token"`
-}
-
 func main() {
 	if version == "" {
 		version = "dev"
@@ -70,7 +66,7 @@ func main() {
 	apiToken := input.Source.APIToken
 	token := pivnet.NewAccessTokenOrLegacyToken(apiToken, endpoint, input.Source.SkipSSLValidation, "Pivnet Product Stemcell Resource")
 
-	client := NewPivnetClientWithToken(
+	client := newPivnetClientWithToken(
 		token,
 		endpoint,
 		input.Source.SkipSSLValidation,
@@ -101,7 +97,7 @@ func main() {
 	}
 }
 
-func NewPivnetClientWithToken(token pivnet.AccessTokenOrLegacyToken, host string, skipSSLValidation bool, userAgent string, logger logger.Logger) *gp.Client {
+func newPivnetClientWithToken(token pivnet.AccessTokenOrLegacyToken, host string, skipSSLValidation bool, userAgent string, logger logger.Logger) *gp.Client {
 	clientConfig := pivnet.ClientConfig{
 		Host:              host,
 		UserAgent:         userAgent,

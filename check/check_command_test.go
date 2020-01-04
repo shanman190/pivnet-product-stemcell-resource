@@ -29,7 +29,7 @@ var _ = Describe("Check", func() {
 		fakeSorter       *checkfakes.FakeSorter
 
 		checkRequest concourse.CheckRequest
-		checkCommand *check.CheckCommand
+		checkCommand *check.Command
 
 		productSlug	string
 		stemcellSlug string

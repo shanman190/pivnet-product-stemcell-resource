@@ -33,7 +33,8 @@ type pivnetClient interface {
 	GetRelease(string, string) (pivnet.Release, error)
 }
 
-type CheckCommand struct {
+// Command : Concourse Check command to search for new versions.
+type Command struct {
 	logger        logger.Logger
 	binaryVersion string
 	filter        filter
@@ -42,6 +43,7 @@ type CheckCommand struct {
 	logFilePath   string
 }
 
+// NewCheckCommand : Creates an instance of the check Command
 func NewCheckCommand(
 	logger logger.Logger,
 	binaryVersion string,
@@ -49,8 +51,8 @@ func NewCheckCommand(
 	pivnetClient pivnetClient,
 	sort sorter,
 	logFilePath string,
-) *CheckCommand {
-	return &CheckCommand{
+) *Command {
+	return &Command{
 		logger:        logger,
 		binaryVersion: binaryVersion,
 		filter:        filter,
@@ -60,7 +62,8 @@ func NewCheckCommand(
 	}
 }
 
-func (c *CheckCommand) Run(input concourse.CheckRequest) (concourse.CheckResponse, error) {
+// Run : Execute the check command
+func (c *Command) Run(input concourse.CheckRequest) (concourse.CheckResponse, error) {
 	c.logger.Info("Received input, starting Check CMD run")
 
 	err := c.removeExistingLogFiles()
@@ -232,7 +235,7 @@ func (c *CheckCommand) Run(input concourse.CheckRequest) (concourse.CheckRespons
 	return out, nil
 }
 
-func (c *CheckCommand) removeExistingLogFiles() error {
+func (c *Command) removeExistingLogFiles() error {
 	logDir := filepath.Dir(c.logFilePath)
 	existingLogFiles, err := filepath.Glob(filepath.Join(logDir, "*.log*"))
 	if err != nil {
@@ -258,7 +261,7 @@ func (c *CheckCommand) removeExistingLogFiles() error {
 	return nil
 }
 
-func (c *CheckCommand) validateReleaseType(releaseType string) error {
+func (c *Command) validateReleaseType(releaseType string) error {
 	c.logger.Info(fmt.Sprintf("Validating release type: '%s'", releaseType))
 	releaseTypes, err := c.pivnetClient.ReleaseTypes()
 	if err != nil {
@@ -303,13 +306,4 @@ func releaseVersions(releases []pivnet.Release) ([]string, error) {
 	}
 
 	return releaseVersions, nil
-}
-
-func keys(productsToStemcells map[string][]string) []string {
-	var keys []string
-	for key := range productsToStemcells {
-		keys = append(keys, key)
-	}
-
-	return keys
 }

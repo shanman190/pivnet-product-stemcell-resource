@@ -97,7 +97,7 @@ func main() {
 		uiPrinter.PrintDeprecationln("The use of static Pivnet API tokens is deprecated and will be removed. Please see https://network.pivotal.io/docs/api#how-to-authenticate for details.")
 	}
 
-	client := NewPivnetClientWithToken(
+	client := newPivnetClientWithToken(
 		token,
 		endpoint,
 		input.Source.SkipSSLValidation,
@@ -141,7 +141,7 @@ func main() {
 	}
 }
 
-func NewPivnetClientWithToken(token pivnet.AccessTokenService, host string, skipSSLValidation bool, userAgent string, logger logger.Logger) *gp.Client {
+func newPivnetClientWithToken(token pivnet.AccessTokenService, host string, skipSSLValidation bool, userAgent string, logger logger.Logger) *gp.Client {
 	clientConfig := pivnet.ClientConfig{
 		Host:              host,
 		UserAgent:         userAgent,

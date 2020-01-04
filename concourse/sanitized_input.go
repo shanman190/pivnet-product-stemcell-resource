@@ -1,5 +1,6 @@
 package concourse
 
+// SanitizedSource : sanitize the input source to prevent credential leaking
 func SanitizedSource(source Source) map[string]string {
 	s := make(map[string]string)
 

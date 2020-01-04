@@ -11,6 +11,7 @@ const (
 	fingerprintDelimiter = "#"
 )
 
+// Since : slice the string array to return all versions since the one specified. If no version is found, then return just the first one.
 func Since(versions []string, since string) ([]string, error) {
 	for i, v := range versions {
 		if v == since {
@@ -21,6 +22,7 @@ func Since(versions []string, since string) ([]string, error) {
 	return versions[:1], nil
 }
 
+// SinceRelease : slice the pivnet.Release array to return all versions since the one specified. If no version is found, then return just the first one.
 func SinceRelease(versions []pivnet.Release, since string) ([]pivnet.Release, error) {
 	for i, v := range versions {
 		if v.Version == since {
@@ -31,6 +33,7 @@ func SinceRelease(versions []pivnet.Release, since string) ([]pivnet.Release, er
 	return versions[:1], nil
 }
 
+// Reverse : reverses the version array
 func Reverse(versions []string) ([]string, error) {
 	var reversed []string
 	for i := len(versions) - 1; i >= 0; i-- {
@@ -40,6 +43,7 @@ func Reverse(versions []string) ([]string, error) {
 	return reversed, nil
 }
 
+// SplitIntoVersionAndFingerprint : splits a structured version into it's version and fingerprint parts
 func SplitIntoVersionAndFingerprint(versionWithFingerprint string) (string, string, error) {
 	split := strings.Split(versionWithFingerprint, fingerprintDelimiter)
 	if len(split) != 2 {
@@ -48,6 +52,7 @@ func SplitIntoVersionAndFingerprint(versionWithFingerprint string) (string, stri
 	return split[0], split[1], nil
 }
 
+// CombineVersionAndFingerprint : combine version and fingerprint into the structured version
 func CombineVersionAndFingerprint(version string, fingerprint string) (string, error) {
 	if fingerprint == "" {
 		return version, nil
