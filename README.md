@@ -1,5 +1,9 @@
 # PivNet Product Stemcell Resource
 
+[![Go Version](https://img.shields.io/github/go-mod/go-version/shanman190/pivnet-product-stemcell-resource)](https://github.com/shanman190/pivnet-product-stemcell-resource)
+[![Actions Status](https://img.shields.io/github/workflow/status/shanman190/pivnet-product-stemcell-resource/CI)](https://github.com/shanman190/pivnet-product-stemcell-resource/actions)
+[![Code Coverage](https://img.shields.io/codecov/c/github/shanman190/pivnet-product-stemcell-resource)](https://codecov.io/github/shanman190/pivnet-product-stemcell-resource?branch=master)
+
 Inspired by the [PivNet Resource](https://github.com/pivotal-cf/pivnet-resource).
 
 This resource is specifically designed to discover the stemcell dependency of a tracked product. 
