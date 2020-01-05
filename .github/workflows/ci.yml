@@ -64,10 +64,19 @@ jobs:
           flags: unittests
           name: pivnet-product-stemcell-resource
           fail_ci_if_error: true
+  vulnerability-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v2
+      - name: Vulnerability scan
+        uses: snyk/actions/golang@v0.1.1
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
   build:
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
-    needs: [lint, test]
+    needs: [lint, test, vulnerability-scan]
     steps:
       - name: Checkout source code
         uses: actions/checkout@v2

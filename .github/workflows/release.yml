@@ -53,9 +53,20 @@ jobs:
             -covermode=atomic \
             -outputdir=. \
             -coverprofile=coverage.xml
+  vulnerability-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v2
+      - name: Vulnerability scan
+        uses: snyk/actions/golang@v0.1.1
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high
   release:
     runs-on: ubuntu-latest
-    needs: [lint, test]
+    needs: [lint, test, vulnerability-scan]
     steps:
       - name: Checkout source code
         uses: actions/checkout@v2
