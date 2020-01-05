@@ -296,29 +296,29 @@ We use [go modules](https://github.com/golang/go/wiki/Modules) for dependencies.
 
 ### Running the tests
 
-Install the ginkgo executable with:
+Install the golint and ginkgo executables with:
 
 ```
+go get -u golang.org/x/lint/golint
 go get -u github.com/onsi/ginkgo/ginkgo
 ```
 
-The tests require a valid Pivotal Network API token and valid AWS S3 configuration.
-
-Refer to the
-[official docs](https://network.pivotal.io/docs/api#how-to-authenticate)
-for more details on obtaining a Pivotal Network API token.
-
-It is advised to run the acceptance tests against the Pivotal Network integration
-environment endpoint `https://pivnet-integration.cfapps.io`.
-
-Run the tests with the following command (dummy values must be replaced by user):
+Run the tests with the following command:
 
 ```
-PRODUCT_SLUG=my-product-slug-eg-pivotal-diego-pcf \
-API_TOKEN=my-token \
-PIVNET_ENDPOINT=some-pivnet-endpoint \
-PIVNET_RESOURCE_REFRESH_TOKEN=some-pivnet-resource-token \
-./bin/test
+ginkgo \
+    -r \
+    -race \
+    -randomizeAllSpecs \
+    -randomizeSuites \
+    -keepGoing \
+    -slowSpecThreshold="${SLOW_SPEC_THRESHOLD}"
+```
+
+And check for code formatting agains the Golang style guide with the following command:
+
+```
+golint ./...
 ```
 
 ### Contributing
