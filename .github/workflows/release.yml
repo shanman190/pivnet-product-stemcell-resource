@@ -45,11 +45,14 @@ jobs:
           CGO_ENABLED=1 $GOBIN/ginkgo \
             -r \
             -race \
-            -p \
             -randomizeAllSpecs \
             -randomizeSuites \
             -keepGoing \
-            -slowSpecThreshold="${SLOW_SPEC_THRESHOLD}"
+            -slowSpecThreshold="${SLOW_SPEC_THRESHOLD}" \
+            -cover \
+            -covermode=atomic \
+            -outputdir=. \
+            -coverprofile=coverage.xml
   release:
     runs-on: ubuntu-latest
     needs: [lint, test]

@@ -48,11 +48,13 @@ jobs:
           CGO_ENABLED=1 $GOBIN/ginkgo \
             -r \
             -race \
-            -p \
             -randomizeAllSpecs \
             -randomizeSuites \
             -keepGoing \
             -slowSpecThreshold="${SLOW_SPEC_THRESHOLD}" \
+            -cover \
+            -covermode=atomic \
+            -outputdir=. \
             -coverprofile=coverage.xml
       - name: Collect coverage report
         uses: codecov/codecov-action@v1
