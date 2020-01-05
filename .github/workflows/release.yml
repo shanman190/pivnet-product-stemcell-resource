@@ -96,9 +96,9 @@ jobs:
           # Strip "v" prefix from tag name
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
 
-          go build -o ./cmd/check/check ./cmd/check/main.go
-          go build -o ./cmd/in/in ./cmd/in/main.go
-          go build -o ./cmd/out/out ./cmd/out/main.go
+          go build -ldflags "-X main.version=$VERSION" -o ./cmd/check/check ./cmd/check/main.go
+          go build -ldflags "-X main.version=$VERSION" -o ./cmd/in/in ./cmd/in/main.go
+          go build -ldflags "-X main.version=$VERSION" -o ./cmd/out/out ./cmd/out/main.go
 
           docker build --file Dockerfile --tag $IMAGE:$VERSION --tag $IMAGE:latest-final .
 

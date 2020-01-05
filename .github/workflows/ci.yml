@@ -102,9 +102,9 @@ jobs:
           # Unique snapshot
           SNAPSHOT="${{ github.sha }}"
 
-          go build -o ./cmd/check/check ./cmd/check/main.go
-          go build -o ./cmd/in/in ./cmd/in/main.go
-          go build -o ./cmd/out/out ./cmd/out/main.go
+          go build -ldflags "-X main.version=dev.$SNAPSHOT" -o ./cmd/check/check ./cmd/check/main.go
+          go build -ldflags "-X main.version=dev.$SNAPSHOT" -o ./cmd/in/in ./cmd/in/main.go
+          go build -ldflags "-X main.version=dev.$SNAPSHOT" -o ./cmd/out/out ./cmd/out/main.go
 
           docker build --file Dockerfile --tag $IMAGE:$SNAPSHOT --tag $IMAGE:latest .
 
