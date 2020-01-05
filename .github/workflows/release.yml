@@ -59,7 +59,7 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v2
       - name: Vulnerability scan
-        uses: snyk/actions/golang@v0.1.1
+        uses: snyk/actions/golang@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
