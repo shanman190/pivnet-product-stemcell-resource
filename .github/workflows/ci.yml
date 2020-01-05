@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v2
+      - name: Setup golang
+        uses: actions/setup-go@v1
+        with:
+          go-version: "1.13"
+      - name: Lint code
+        run: golint -set_exit_status ./...
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v2
+      - name: Setup golang
+        uses: actions/setup-go@v1
+        with:
+          go-version: "1.13"
+      - name: Run tests
+        run: |
+          # In seconds
+          SLOW_SPEC_THRESHOLD="${SLOW_SPEC_THRESHOLD:-60}"
+
+          CGO_ENABLED=1 ginkgo \
+            -r \
+            -race \
+            -p \
+            -randomizeAllSpecs \
+            -randomizeSuites \
+            -keepGoing \
+            -slowSpecThreshold="${SLOW_SPEC_THRESHOLD}"
+  build:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    needs: [lint, test]
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v2
+      - name: Setup golang
+        uses: actions/setup-go@v1
+        with:
+          go-version: "1.13"
+      - name: Login to registry
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login --username ${{ github.actor }} --password-stdin
+      - name: Build Docker image
+        run: |
+          # Image name
+          IMAGE="shanman190/pivnet-product-stemcell-resource"
+
+          # Unique snapshot
+          SNAPSHOT="${{ github.sha }}"
+
+          go build -o ./cmd/check/check ./cmd/check/main.go
+          go build -o ./cmd/in/in ./cmd/in/main.go
+          go build -o ./cmd/out/out ./cmd/out/main.go
+
+          docker build --file Dockerfile --tag $IMAGE:$SNAPSHOT --tag $IMAGE:latest .
+
+          docker push $IMAGE:$SNAPSHOT
+          docker push $IMAGE:latest

@@ -1,0 +1,81 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v2
+      - name: Setup golang
+        uses: actions/setup-go@v1
+        with:
+          go-version: "1.13"
+      - name: Lint code
+        run: golint -set_exit_status ./...
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v2
+      - name: Setup golang
+        uses: actions/setup-go@v1
+        with:
+          go-version: "1.13"
+      - name: Run tests
+        run: |
+          # In seconds
+          SLOW_SPEC_THRESHOLD="${SLOW_SPEC_THRESHOLD:-60}"
+
+          CGO_ENABLED=1 ginkgo \
+            -r \
+            -race \
+            -p \
+            -randomizeAllSpecs \
+            -randomizeSuites \
+            -keepGoing \
+            -slowSpecThreshold="${SLOW_SPEC_THRESHOLD}"
+  release:
+    runs-on: ubuntu-latest
+    needs: [lint, test]
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v2
+      - name: Setup golang
+        uses: actions/setup-go@v1
+        with:
+          go-version: "1.13"
+      - name: Create release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+      - name: Login to registry
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login --username shanman190 --password-stdin
+      - name: Build Docker image
+        run: |
+          # Image name
+          IMAGE="shanman190/pivnet-product-stemcell-resource"
+
+          # Strip git ref prefix from version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+
+          go build -o ./cmd/check/check ./cmd/check/main.go
+          go build -o ./cmd/in/in ./cmd/in/main.go
+          go build -o ./cmd/out/out ./cmd/out/main.go
+
+          docker build --file Dockerfile --tag $IMAGE:$VERSION --tag $IMAGE:latest-final .
+
+          docker push $IMAGE:$VERSION
+          docker push $IMAGE:latest-final
