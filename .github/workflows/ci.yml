@@ -8,13 +8,13 @@ on:
       - 'README.md'
       - '.gitignore'
       - '.github/**'
-  pull_request:
-    branches:
-      - master
-    paths-ignore:
-      - 'README.md'
-      - '.gitignore'
-      - '.github/**'
+#   pull_request:
+#     branches:
+#       - master
+#     paths-ignore:
+#       - 'README.md'
+#       - '.gitignore'
+#       - '.github/**'
 
 jobs:
   lint:
