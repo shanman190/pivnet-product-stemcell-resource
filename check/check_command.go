@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/pivotal-cf/go-pivnet/v3"
-	"github.com/pivotal-cf/go-pivnet/v3/logger"
+	"github.com/pivotal-cf/go-pivnet/v7"
+	"github.com/pivotal-cf/go-pivnet/v7/logger"
 	
 	"github.com/shanman190/pivnet-product-stemcell-resource/concourse"
 	"github.com/shanman190/pivnet-product-stemcell-resource/versions"

@@ -3,18 +3,18 @@ name: CI
 on:
   push:
     branches:
-      - master
+      - main
     paths-ignore:
       - 'README.md'
       - '.gitignore'
       - '.github/**'
-#   pull_request:
-#     branches:
-#       - master
-#     paths-ignore:
-#       - 'README.md'
-#       - '.gitignore'
-#       - '.github/**'
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - 'README.md'
+      - '.gitignore'
+      - '.github/**'
 
 jobs:
   lint:
@@ -25,15 +25,10 @@ jobs:
       - name: Setup golang
         uses: actions/setup-go@v1
         with:
-          go-version: "1.13"
+          go-version: "1.19"
       - name: Lint code
-        env:
-          GOBIN: /home/runner/go/bin
         run: |
-          # Install cli tools
-          go get -u golang.org/x/lint/golint
-
-          $GOBIN/golint -set_exit_status ./...
+          go vet ./...
   test:
     runs-on: ubuntu-latest
     steps:
@@ -42,33 +37,33 @@ jobs:
       - name: Setup golang
         uses: actions/setup-go@v1
         with:
-          go-version: "1.13"
+          go-version: "1.19"
       - name: Run tests
         env:
           GOBIN: /home/runner/go/bin
         run: |
           # Install cli tools
-          go get github.com/onsi/ginkgo/ginkgo
+          go install github.com/onsi/ginkgo/v2/ginkgo@latest
           
           # In seconds
-          SLOW_SPEC_THRESHOLD="${SLOW_SPEC_THRESHOLD:-60}"
+          SLOW_SPEC_THRESHOLD="${SLOW_SPEC_THRESHOLD:-60s}"
 
           CGO_ENABLED=1 $GOBIN/ginkgo \
             -r \
             -race \
-            -randomizeAllSpecs \
-            -randomizeSuites \
-            -keepGoing \
-            -slowSpecThreshold="${SLOW_SPEC_THRESHOLD}" \
+            -randomize-all \
+            -randomize-suites \
+            -keep-going \
+            -slow-spec-threshold="${SLOW_SPEC_THRESHOLD}" \
             -cover \
             -covermode=atomic \
-            -outputdir=. \
-            -coverprofile=coverage.xml
+            -output-dir=. \
+            -coverprofile=coverage.out
       - name: Collect coverage report
         uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          file: ./coverage.xml
+          file: ./coverage.out
           flags: unittests
           name: pivnet-product-stemcell-resource
           fail_ci_if_error: true
@@ -91,7 +86,7 @@ jobs:
       - name: Setup golang
         uses: actions/setup-go@v1
         with:
-          go-version: "1.13"
+          go-version: "1.19"
       - name: Login to registry
         run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login --username ${{ github.actor }} --password-stdin
       - name: Build Docker image

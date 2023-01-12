@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/pivotal-cf/go-pivnet/v3"
+	"github.com/pivotal-cf/go-pivnet/v7"
 )
 
 const (

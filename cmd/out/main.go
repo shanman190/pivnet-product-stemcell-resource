@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/fatih/color"
-	"github.com/pivotal-cf/pivnet-resource/ui"
+	"github.com/pivotal-cf/pivnet-resource/v3/ui"
 )
 
 var (

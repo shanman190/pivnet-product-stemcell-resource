@@ -1,10 +1,10 @@
 package versions_test
 
 import (
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	
-	"github.com/pivotal-cf/go-pivnet/v3"
+	"github.com/pivotal-cf/go-pivnet/v7"
 
 	"github.com/shanman190/pivnet-product-stemcell-resource/versions"
 )

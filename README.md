@@ -2,7 +2,7 @@
 
 [![Go Version](https://img.shields.io/github/go-mod/go-version/shanman190/pivnet-product-stemcell-resource)](https://github.com/shanman190/pivnet-product-stemcell-resource)
 [![Actions Status](https://img.shields.io/github/workflow/status/shanman190/pivnet-product-stemcell-resource/CI)](https://github.com/shanman190/pivnet-product-stemcell-resource/actions)
-[![Code Coverage](https://img.shields.io/codecov/c/github/shanman190/pivnet-product-stemcell-resource)](https://codecov.io/github/shanman190/pivnet-product-stemcell-resource?branch=master)
+[![Code Coverage](https://img.shields.io/codecov/c/github/shanman190/pivnet-product-stemcell-resource)](https://codecov.io/github/shanman190/pivnet-product-stemcell-resource?branch=main)
 
 Inspired by the [PivNet Resource](https://github.com/pivotal-cf/pivnet-resource).
 
@@ -100,7 +100,7 @@ resources:
 
 ## Example pipeline configuration
 
-See [example pipeline configurations](https://github.com/shanman190/pivnet-product-stemcell-resource/blob/master/examples).
+See [example pipeline configurations](https://github.com/shanman190/pivnet-product-stemcell-resource/blob/main/examples).
 
 ## Behavior
 
@@ -119,7 +119,7 @@ The metadata for the stemcell is written to both `metadata.json` and
 `metadata.yaml` in the working directory (typically `/tmp/build/get`).
 Use this to programmatically determine metadata of the release.
 
-See [metadata](https://github.com/shanman190/pivnet-product-stemcell-resource/blob/master/metadata)
+See [metadata](https://github.com/shanman190/pivnet-product-stemcell-resource/blob/main/metadata)
 for more details on the structure of the metadata file.
 
 #### Parameters
@@ -327,5 +327,5 @@ golint ./...
 
 ### Contributing
 
-Please make all pull requests to the `master` branch, and
+Please make all pull requests to the `main` branch, and
 [ensure the tests pass locally](https://github.com/shanman190/pivnet-product-stemcell-resource#running-the-tests).
