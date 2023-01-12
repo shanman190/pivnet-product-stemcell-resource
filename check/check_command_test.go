@@ -505,11 +505,11 @@ var _ = Describe("Check", func() {
 		Context("when no errors are raised", func() {
 			BeforeEach(func() {
 				fakePivnetClient.ReleaseDependenciesReturnsOnCall(0, []pivnet.ReleaseDependency{allReleaseDependencies[1]}, allReleaseDependenciesErr)
-				fakePivnetClient.ReleaseDependenciesReturnsOnCall(1, []pivnet.ReleaseDependency{allReleaseDependencies[2], allReleaseDependencies[0]}, allReleaseDependenciesErr)
+				fakePivnetClient.ReleaseDependenciesReturnsOnCall(1, []pivnet.ReleaseDependency{allReleaseDependencies[0], allReleaseDependencies[2]}, allReleaseDependenciesErr)
 				fakePivnetClient.ReleaseDependenciesReturnsOnCall(2, []pivnet.ReleaseDependency{allReleaseDependencies[0]}, allReleaseDependenciesErr)
 				fakePivnetClient.GetReleaseReturnsOnCall(0, stemcellReleases[1], stemcellReleasesErr)
-				fakePivnetClient.GetReleaseReturnsOnCall(1, stemcellReleases[2], stemcellReleasesErr)
-				fakePivnetClient.GetReleaseReturnsOnCall(2, stemcellReleases[0], stemcellReleasesErr)
+				fakePivnetClient.GetReleaseReturnsOnCall(1, stemcellReleases[0], stemcellReleasesErr)
+				fakePivnetClient.GetReleaseReturnsOnCall(2, stemcellReleases[2], stemcellReleasesErr)
 				fakePivnetClient.GetReleaseReturnsOnCall(3, stemcellReleases[0], stemcellReleasesErr)
 
 				fakeSorter.SortBySemverReturnsOnCall(0, semverOrderedProductReleases, nil)

@@ -156,15 +156,12 @@ func (c *Command) Run(input concourse.CheckRequest) (concourse.CheckResponse, er
 			}
 		}
 
-		lastSeenStemcellVersion, _, _ := versions.SplitIntoVersionAndFingerprint(input.Version.StemcellVersion)
-		newStemcellVersions, err := versions.Since(stemcellVersions, lastSeenStemcellVersion)
-		if err != nil {
-			// Untested because versions.Since cannot be forced to return an error.
-			return nil, err
+		if len(stemcellVersions) == 0 {
+			return nil, fmt.Errorf("cannot find specified stemcells for product release")
 		}
 
-		var stemcells []pivnet.Release
-		for _, stemcellVersion := range newStemcellVersions {
+		var stemcellReleases []pivnet.Release
+		for _, stemcellVersion := range stemcellVersions {
 			c.logger.Info(fmt.Sprintf("Getting release details for '%s/%s'", stemcellSlug, stemcellVersion))
 			stemcellRelease, ok := stemcellCache[stemcellVersion]
 			if !ok {
@@ -176,21 +173,28 @@ func (c *Command) Run(input concourse.CheckRequest) (concourse.CheckResponse, er
 				stemcellCache[stemcellVersion] = stemcellRelease
 			}
 
-			stemcells = append(stemcells, stemcellRelease)
+			stemcellReleases = append(stemcellReleases, stemcellRelease)
 		}
 
 		if input.Source.SortBy == concourse.SortBySemver {
 			c.logger.Info("Sorting all stemcell releases by semver")
-			stemcells, err = c.sort.SortBySemver(stemcells)
+			stemcellReleases, err = c.sort.SortBySemver(stemcellReleases)
 			if err != nil {
 				return nil, err
 			}
 		} else if input.Source.SortBy == concourse.SortByLastUpdated {
 			c.logger.Info("Sorting all stemcell releases by release date")
-			stemcells, err = c.sort.SortByLastUpdated(stemcells)
+			stemcellReleases, err = c.sort.SortByLastUpdated(stemcellReleases)
 			if err != nil {
 				return nil, err
 			}
+		}
+
+		lastSeenStemcellVersion, _, _ := versions.SplitIntoVersionAndFingerprint(input.Version.StemcellVersion)
+		stemcells, err := versions.SinceRelease(stemcellReleases, lastSeenStemcellVersion)
+		if err != nil {
+			// Untested because versions.Since cannot be forced to return an error.
+			return nil, err
 		}
 
 		fingerprintedStemcellVersions, err := releaseVersions(stemcells)
