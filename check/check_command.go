@@ -145,6 +145,10 @@ func (c *Command) Run(input concourse.CheckRequest) (concourse.CheckResponse, er
 			return nil, err
 		}
 
+		if len(releaseDependencies) == 0 {
+			return nil, fmt.Errorf("cannot find specified dependencies for product release")
+		}
+
 		var stemcellVersions []string
 		for _, productReleaseDependency := range releaseDependencies {
 			if strings.Contains(productReleaseDependency.Release.Product.Slug, stemcellSlug) {

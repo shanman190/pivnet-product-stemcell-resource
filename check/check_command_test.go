@@ -285,6 +285,19 @@ var _ = Describe("Check", func() {
 		})
 	})
 
+	Context("when no release dependencies are returned", func() {
+		BeforeEach(func() {
+			fakePivnetClient.ReleaseDependenciesReturnsOnCall(0, []pivnet.ReleaseDependency{}, allReleaseDependenciesErr)
+		})
+
+		It("returns an error", func() {
+			_, err := checkCommand.Run(checkRequest)
+			Expect(err).To(HaveOccurred())
+
+			Expect(err.Error()).To(ContainSubstring("cannot find specified dependencies for product release"))
+		})
+	})
+
 	Context("when there is an error getting release types", func() {
 		BeforeEach(func() {
 			releaseTypesErr = fmt.Errorf("some error")
